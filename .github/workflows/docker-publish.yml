@@ -31,9 +31,4 @@ jobs: # Defining jobs which are composed of steps and actions executed on a sing
         platforms: linux/amd64,linux/arm64
         tags: |
           ghcr.io/rikg215/skills-publish-docker-images/stackoverflown:main
-<<<<<<< HEAD
           ghcr.io/rikg215/skills-publish-docker-images/stackoverflown:${{ github.sha }}
-
-=======
-          ghcr.io/rikg215/skills-publish-docker-images/stackoverflown:${{ github.sha }}
->>>>>>> aa8d014 (replaced manual steps in workflow with actions.)
