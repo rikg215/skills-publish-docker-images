@@ -11,15 +11,18 @@ permissions: # setting permissions
 jobs: # Defining jobs which are composed of steps and actions executed on a single runner
   build-and-push: # job name
     runs-on: ubuntu-latest # what flavor of runner the job will run on. Latest version of ubuntu selected.
-    steps: # defining the steps that will run
-    - uses: actions/checkout@v6 # first step. checks out the repo on the runner.
-    - name: Log in to the Container Registry # naming step 2
-      uses: docker/login-action@v3 # calling github action to log into registry with credentials
-      with: # specifying which registry and what credentials are used to log in
-        registry: ghcr.io # github registry
-        username: ${{ github.actor }} # current user 
-        password: ${{ secrets.GITHUB_TOKEN }} # built in github token. Destroyed and rebuilt for each runner
-    - name: Build and push Docker image # running commands to build image and push to registry
-      run: | # commands to run
-        docker build . --tag ghcr.io/rikg215/skills-publish-docker-images/stackoverflown:main
-        docker push ghcr.io/rikg215/skills-publish-docker-images/stackoverflown:main
+    steps:
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        push: true
+        platforms: linux/amd64,linux/arm64
+        tags: |
+          ghcr.io/rikg215/skills-publish-docker-images/stackoverflown:main
+          ghcr.io/rikg215/skills-publish-docker-images/stackoverflown:${{ github.sha }}
+
